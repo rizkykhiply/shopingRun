@@ -21,9 +21,9 @@ class Cart extends Component {
             barcode: "",
             search: "",
             customer_id: "",
+            namaKond: "",
         };
-
-        console.log(poinNasahabRegis, poinNasahabNonRegis);
+        // console.log(poinNasahabRegis, poinNasahabNonRegis);
         this.loadCart = this.loadCart.bind(this);
         this.handleOnChangeBarcode = this.handleOnChangeBarcode.bind(this);
         this.handleScanBarcode = this.handleScanBarcode.bind(this);
@@ -48,6 +48,7 @@ class Cart extends Component {
         axios.get(`/admin/customers`).then((res) => {
             const customers = res.data;
             this.setState({ customers });
+            console.log(customers);
         });
     }
 
@@ -107,6 +108,8 @@ class Cart extends Component {
     }
 
     getTotal(cart) {
+        // const contoh = kondisi1.jmlPembagi
+        // console.log(contoh);
         const total = cart.map((c) => c.pivot.price * c.price);
         const totalDivideRegis = 250000;
         const totalMinRegis = 750000;
@@ -136,9 +139,10 @@ class Cart extends Component {
             calcPoin = maxPoin;
         }
 
-        console.log(calcPoin);
+        // console.log(this.state.customers.map((customer) => customer.nama));
         this.state.poin = calcPoin;
-        console.log("hitung poin", calcPoin);
+        // console.log("hitung poin", calcPoin);
+
         return sum(total).toFixed();
     }
 
@@ -211,8 +215,12 @@ class Cart extends Component {
     }
 
     setCustomerId(event) {
-        this.setState({ customer_id: event.target.value });
+        this.setState({
+            customer_id: event.target.value,
+            namaKond: event.target.value,
+        });
     }
+
     handleClickSubmit() {
         Swal.fire({
             title: "Received Amount",
@@ -227,6 +235,7 @@ class Cart extends Component {
                         customer_id: this.state.customer_id,
                         amount,
                         poin: this.state.poin,
+                        namaKond: this.state.namaKond,
                     })
                     .then((res) => {
                         this.loadCart();
@@ -242,6 +251,8 @@ class Cart extends Component {
                 //
             }
         });
+        const cust = this.state.customers.map((customer) => customer.nama);
+        console.log(cust);
     }
     formatCurrency(amount) {
         // Remove non-numeric characters and decimals
@@ -261,7 +272,7 @@ class Cart extends Component {
 
     render() {
         const { cart, products, customers, barcode } = this.state;
-        // console.log(customers);
+        // console.log(products);
         return (
             <div className="row">
                 <div className="col-md-6 col-lg-4">
@@ -287,7 +298,7 @@ class Cart extends Component {
                                     <option
                                         key={cus.id}
                                         value={cus.id}
-                                    >{`${cus.nama} ${cus.hp}`}</option>
+                                    >{`${cus.nama} (${cus.kondisi1.namaKond})`}</option>
                                 ))}
                             </select>
                         </div>

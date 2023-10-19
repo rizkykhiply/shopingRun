@@ -4,93 +4,59 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerStoreRequest;
 use App\Models\Customer;
-use App\Models\Product;
+use App\Models\Kondisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
-    {
-        if (request()->wantsJson()) {
-            return response(
-                Customer::all()
-            );
-        }
-        $customers = Customer::latest()->paginate(10);
-        return view('customers.index')->with('customers', $customers);
+{
+    if (request()->wantsJson()) {
+        // Jika permintaan adalah JSON, kembalikan data pelanggan dalam format JSON
+        return response(Customer::with('kondisi1')->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // Jika bukan permintaan JSON, ambil semua data pelanggan dengan relasi kondisi dan urutkan berdasarkan yang terbaru.
+    $customers = Customer::with('kondisi1')->latest()->paginate(10);
+
+    // Lebih lanjut, lewatkan data pelanggan ke tampilan
+    return view('customers.index', compact('customers'));
+}
+
     public function create()
     {
-        return view('customers.create');
+        $kondisiOptions = Kondisi::all();
+        return view('customers.create', compact('kondisiOptions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(CustomerStoreRequest $request)
     {
-
         $customer = Customer::create([
             'nama' => $request->nama,
             'nik' => $request->nik,
             'alamat' => $request->alamat,
             'hp' => $request->hp,
             'rek' => $request->rek,
-            'pekerjaan' => $request->pekerjaan,
+            'kondisi_id' => $request->kondisi, // Sesuaikan dengan nama kolom relasi yang digunakan
             'saldo' => $request->saldo,
             'poin' => $request->poin,
             'user_id' => $request->user()->id,
         ]);
 
         if (!$customer) {
-            return redirect()->back()->with('error', 'Sorry, there\'re a problem while creating customer.');
+            return redirect()->back()->with('error', 'Maaf, ada masalah saat membuat pelanggan.');
         }
-        return redirect()->route('customers.index')->with('success', 'Success, your customer have been created.');
+
+        return redirect()->route('customers.index')->with('success', 'Berhasil, pelanggan Anda telah dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Customer $customer)
-    {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Customer $customer)
     {
-        return view('customers.edit', compact('customer'));
+        $kondisiOptions = Kondisi::all();
+        return view('customers.edit', compact('customer', 'kondisiOptions'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Customer $customer)
     {
         $customer->nama = $request->nama;
@@ -98,26 +64,15 @@ class CustomerController extends Controller
         $customer->alamat = $request->alamat;
         $customer->hp = $request->hp;
         $customer->rek = $request->rek;
-        $customer->pekerjaan = $request->pekerjaan;
-        $customer->poin = $request->saldo;
+        $customer->kondisi_id = $request->kondisi; // Sesuaikan dengan nama kolom relasi yang digunakan
         $customer->poin = $request->poin;
-        
-
-        // if ($request->hasFile('avatar')) {
-        //     // Delete old avatar
-        //     if ($customer->avatar) {
-        //         Storage::delete($customer->avatar);
-        //     }
-        //     // Store avatar
-        //     $avatar_path = $request->file('avatar')->store('customers', 'public');
-        //     // Save to Database
-        //     $customer->avatar = $avatar_path;
-        // }
+        $customer->saldo = $request->saldo;
 
         if (!$customer->save()) {
-            return redirect()->back()->with('error', 'Sorry, there\'re a problem while updating customer.');
+            return redirect()->back()->with('error', 'Maaf, ada masalah saat memperbarui pelanggan.');
         }
-        return redirect()->route('customers.index')->with('success', 'Success, your customer have been updated.');
+
+        return redirect()->route('customers.index')->with('success', 'Berhasil, pelanggan Anda telah diperbarui.');
     }
 
     public function destroy(Customer $customer)
@@ -128,8 +83,8 @@ class CustomerController extends Controller
 
         $customer->delete();
 
-       return response()->json([
-           'success' => true
-       ]);
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

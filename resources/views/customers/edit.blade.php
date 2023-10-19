@@ -91,7 +91,18 @@
                     </span>
                     @enderror
                 </div>
-
+                <div class="form-group">
+                    <label for="kondisi">Kondisi Hitung</label>
+                    <select name="kondisi" class="form-control">
+                        <option value="">Pilih Kondisi</option>
+                        @foreach ($kondisiOptions as $kondisi)
+                            <option value="{{ $kondisi->id }}" {{ (old('kondisi') ?? $customer->kondisi) == $kondisi->id ? 'selected' : '' }}>
+                                {{ $kondisi->namaKond }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                
 
                 <button class="btn btn-primary" type="submit">Update</button>
             </form>

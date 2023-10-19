@@ -15,9 +15,14 @@ class Customer extends Model
         'rek',
         'pekerjaan',
         'saldo',
+        'kondisi_id',
         'poin',
         'user_id',
     ];
 
+    public function kondisi1()
+    {
+        return $this->belongsTo(Kondisi::class, 'kondisi_id');
+    }
 
 }
