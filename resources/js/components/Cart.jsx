@@ -21,7 +21,10 @@ class Cart extends Component {
             barcode: "",
             search: "",
             customer_id: "",
-            namaKond: "",
+            // jmlPembagi: "",
+            // jmlMin: "",
+            // minPoin: "",
+            // maxPoin: "",
         };
         // console.log(poinNasahabRegis, poinNasahabNonRegis);
         this.loadCart = this.loadCart.bind(this);
@@ -48,7 +51,6 @@ class Cart extends Component {
         axios.get(`/admin/customers`).then((res) => {
             const customers = res.data;
             this.setState({ customers });
-            console.log(customers);
         });
     }
 
@@ -108,15 +110,21 @@ class Cart extends Component {
     }
 
     getTotal(cart) {
-        // const contoh = kondisi1.jmlPembagi
-        // console.log(contoh);
-        const total = cart.map((c) => c.pivot.price * c.price);
-        const totalDivideRegis = 250000;
-        const totalMinRegis = 750000;
-        const totalMinPoin = 3;
-        const totalCart = sum(total).toFixed();
-        const maxPoin = 40;
+        if (this.state.customers && this.state.customers.length > 0) {
+            if (this.state.customers[0].kondisi1) {
+            } else {
+                console.log("kondisi1 is undefined for the first customer");
+            }
+        } else {
+            return 0;
+        }
 
+        const total = cart.map((c) => c.pivot.price * c.price);
+        const totalDivideRegis = this.state.jmlPembagi;
+        const totalMinRegis = this.state.jmlMin;
+        const totalMinPoin = this.state.minPoin;
+        const maxPoin = this.state.maxPoin;
+        const totalCart = sum(total).toFixed();
         let calcPoin = 0;
 
         if ((totalCart / totalMinRegis) % 1 === 0) {
@@ -138,10 +146,7 @@ class Cart extends Component {
         if (calcPoin > maxPoin) {
             calcPoin = maxPoin;
         }
-
-        // console.log(this.state.customers.map((customer) => customer.nama));
         this.state.poin = calcPoin;
-        // console.log("hitung poin", calcPoin);
 
         return sum(total).toFixed();
     }
@@ -172,10 +177,8 @@ class Cart extends Component {
     addProductToCart(barcode) {
         let product = this.state.products.find((p) => p.barcode === barcode);
         if (!!product) {
-            // if product is already in cart
             let cart = this.state.cart.find((c) => c.id === product.id);
             if (!!cart) {
-                // update quantity
                 this.setState({
                     cart: this.state.cart.map((c) => {
                         if (
@@ -215,10 +218,23 @@ class Cart extends Component {
     }
 
     setCustomerId(event) {
-        this.setState({
-            customer_id: event.target.value,
-            namaKond: event.target.value,
-        });
+        const customerId = parseInt(event.target.value, 10);
+        const customer = this.state.customers.find(
+            (cust) => cust.id === customerId
+        );
+        if (customer) {
+            console.log(customer);
+            if (customer.kondisi1) {
+                const kondisi1 = customer.kondisi1;
+                this.setState({
+                    customer_id: customerId,
+                    jmlPembagi: kondisi1.jmlPembagi,
+                    jmlMin: kondisi1.jmlMin,
+                    minPoin: kondisi1.minPoin,
+                    maxPoin: kondisi1.maxPoin,
+                });
+            }
+        }
     }
 
     handleClickSubmit() {
@@ -235,7 +251,6 @@ class Cart extends Component {
                         customer_id: this.state.customer_id,
                         amount,
                         poin: this.state.poin,
-                        namaKond: this.state.namaKond,
                     })
                     .then((res) => {
                         this.loadCart();
@@ -295,10 +310,9 @@ class Cart extends Component {
                             >
                                 <option value="">Walking Customer</option>
                                 {customers.map((cus) => (
-                                    <option
-                                        key={cus.id}
-                                        value={cus.id}
-                                    >{`${cus.nama} (${cus.kondisi1.namaKond})`}</option>
+                                    <option key={cus.id} value={cus.id}>
+                                        {`${cus.nama} (${cus.kondisi1.namaKond})`}
+                                    </option>
                                 ))}
                             </select>
                         </div>
