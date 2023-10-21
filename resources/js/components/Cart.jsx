@@ -21,12 +21,7 @@ class Cart extends Component {
             barcode: "",
             search: "",
             customer_id: "",
-            // jmlPembagi: "",
-            // jmlMin: "",
-            // minPoin: "",
-            // maxPoin: "",
         };
-        // console.log(poinNasahabRegis, poinNasahabNonRegis);
         this.loadCart = this.loadCart.bind(this);
         this.handleOnChangeBarcode = this.handleOnChangeBarcode.bind(this);
         this.handleScanBarcode = this.handleScanBarcode.bind(this);
@@ -41,7 +36,6 @@ class Cart extends Component {
     }
 
     componentDidMount() {
-        // load user cart
         this.loadCart();
         this.loadProducts();
         this.loadCustomers();
@@ -123,8 +117,9 @@ class Cart extends Component {
         const totalDivideRegis = this.state.jmlPembagi;
         const totalMinRegis = this.state.jmlMin;
         const totalMinPoin = this.state.minPoin;
+        const totalCart = sum(total);
         const maxPoin = this.state.maxPoin;
-        const totalCart = sum(total).toFixed();
+
         let calcPoin = 0;
 
         if ((totalCart / totalMinRegis) % 1 === 0) {
@@ -147,7 +142,8 @@ class Cart extends Component {
             calcPoin = maxPoin;
         }
         this.state.poin = calcPoin;
-
+        console.log(calcPoin);
+        console.log(totalCart);
         return sum(total).toFixed();
     }
 
@@ -209,7 +205,6 @@ class Cart extends Component {
                 .post("/admin/cart", { barcode })
                 .then((res) => {
                     this.loadCart();
-                    // console.log(res);
                 })
                 .catch((err) => {
                     Swal.fire("Error!", err.response.data.message, "error");
@@ -270,24 +265,21 @@ class Cart extends Component {
         console.log(cust);
     }
     formatCurrency(amount) {
-        // Remove non-numeric characters and decimals
         const numericString = amount.toString().replace(/\D/g, "");
 
-        // Convert the numeric string to a number
         const numericValue = parseInt(numericString, 10);
 
-        // Format the number with a thousands separator (,)
         return numericValue.toLocaleString("id-ID");
     }
 
     handleCheckboxChange(event) {
         const newValue = event.target.checked;
-        this.setState({ checkboxValue: newValue }); // Update the state
+        this.setState({ checkboxValue: newValue });
     }
 
     render() {
         const { cart, products, customers, barcode } = this.state;
-        // console.log(products);
+
         return (
             <div className="row">
                 <div className="col-md-6 col-lg-4">
@@ -371,26 +363,7 @@ class Cart extends Component {
                             </table>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col">
-                            <input
-                                type="checkbox"
-                                checked={this.state.checkboxValue} // Set the initial value
-                                onChange={this.handleCheckboxChange} // Define a change handler
-                            />
-                            Customer Yang Sudah Terdaftar
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col">
-                            <input
-                                type="checkbox"
-                                checked={this.state.checkboxValue} // Set the initial value
-                                onChange={this.handleCheckboxChange} // Define a change handler
-                            />
-                            Customer Yang Sudah Terdaftar
-                        </div>
-                    </div>
+
                     <div className="row">
                         <div className="col">Total:</div>
                         <div className="col text-right">

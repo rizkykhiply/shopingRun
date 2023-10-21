@@ -29,7 +29,8 @@ class Order extends Model
     public function getCustomerName()
     {
         if($this->customer) {
-            return $this->customer->first_name . ' ' . $this->customer->last_name;
+            // return $this->customer->nama . ' ' . $this->customer->hp;
+            return $this->customer->nama;
         }
         return 'Working Customer';
     }
@@ -44,6 +45,11 @@ class Order extends Model
     public function formattedTotal()
     {
         return number_format($this->total());
+    }
+
+    public function poin()
+    {
+        return ($this->poin());
     }
 
     public function receivedAmount()
