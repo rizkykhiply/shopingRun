@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+// import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { sum } from "lodash";
 
-const poinNasahabRegis = 250000;
-const poinNasahabNonRegis = 750000;
-const maxPoin = 7500000;
-const minPoinRegis = 3;
-const minPoinNonRegis = 2;
+// const poinNasahabRegis = 250000;
+// const poinNasahabNonRegis = 750000;
+// const maxPoin = 7500000;
+// const minPoinRegis = 3;
+// const minPoinNonRegis = 2;
 
 class Cart extends Component {
     constructor(props) {
