@@ -21,7 +21,12 @@ class Cart extends Component {
             barcode: "",
             search: "",
             customer_id: "",
+            // jmlPembagi: "",
+            // jmlMin: "",
+            // minPoin: "",
+            // maxPoin: "",
         };
+        // console.log(poinNasahabRegis, poinNasahabNonRegis);
         this.loadCart = this.loadCart.bind(this);
         this.handleOnChangeBarcode = this.handleOnChangeBarcode.bind(this);
         this.handleScanBarcode = this.handleScanBarcode.bind(this);
@@ -36,6 +41,7 @@ class Cart extends Component {
     }
 
     componentDidMount() {
+        // load user cart
         this.loadCart();
         this.loadProducts();
         this.loadCustomers();
@@ -45,6 +51,7 @@ class Cart extends Component {
         axios.get(`/admin/customers`).then((res) => {
             const customers = res.data;
             this.setState({ customers });
+            console.log(customers);
         });
     }
 
@@ -117,9 +124,9 @@ class Cart extends Component {
         const totalDivideRegis = this.state.jmlPembagi;
         const totalMinRegis = this.state.jmlMin;
         const totalMinPoin = this.state.minPoin;
-        const totalCart = sum(total);
         const maxPoin = this.state.maxPoin;
-
+        const totalCart = sum(total).toFixed();
+        // console.log(this.state.jmlPembagi);
         let calcPoin = 0;
 
         if ((totalCart / totalMinRegis) % 1 === 0) {
@@ -136,16 +143,16 @@ class Cart extends Component {
             }
             if (totalCart < totalMinRegis) {
                 calcPoin = 0;
-            } else {
-                calcPoin = Math.floor(totalCart / 250000);
             }
         }
         if (calcPoin > maxPoin) {
             calcPoin = maxPoin;
         }
+        console.log(this.state.jmlPembagi);
+        // console.log(this.state.customers.map((customer) => customer.nama));
         this.state.poin = calcPoin;
-        console.log(calcPoin);
-        console.log(totalCart);
+        console.log("hitung poin", calcPoin);
+
         return sum(total).toFixed();
     }
 
@@ -175,8 +182,10 @@ class Cart extends Component {
     addProductToCart(barcode) {
         let product = this.state.products.find((p) => p.barcode === barcode);
         if (!!product) {
+            // if product is already in cart
             let cart = this.state.cart.find((c) => c.id === product.id);
             if (!!cart) {
+                // update quantity
                 this.setState({
                     cart: this.state.cart.map((c) => {
                         if (
@@ -207,6 +216,7 @@ class Cart extends Component {
                 .post("/admin/cart", { barcode })
                 .then((res) => {
                     this.loadCart();
+                    // console.log(res);
                 })
                 .catch((err) => {
                     Swal.fire("Error!", err.response.data.message, "error");
@@ -215,22 +225,19 @@ class Cart extends Component {
     }
 
     setCustomerId(event) {
-        const customerId = parseInt(event.target.value, 10);
-        const customer = this.state.customers.find(
-            (cust) => cust.id === customerId
+        const customerId = event.target.value;
+        const selectedCustomer = this.state.customers.find(
+            (customer) => customer.id === customerId
         );
-        if (customer) {
-            console.log(customer);
-            if (customer.kondisi1) {
-                const kondisi1 = customer.kondisi1;
-                this.setState({
-                    customer_id: customerId,
-                    jmlPembagi: kondisi1.jmlPembagi,
-                    jmlMin: kondisi1.jmlMin,
-                    minPoin: kondisi1.minPoin,
-                    maxPoin: kondisi1.maxPoin,
-                });
-            }
+
+        if (selectedCustomer) {
+            this.setState({
+                customer_id: customerId,
+                jmlPembagi: selectedCustomer.kondisi1.jmlPembagi,
+                jmlMin: selectedCustomer.kondisi1.jmlMin,
+                minPoin: selectedCustomer.kondisi1.minPoin,
+                maxPoin: selectedCustomer.kondisi1.maxPoin,
+            });
         }
     }
 
@@ -267,21 +274,24 @@ class Cart extends Component {
         console.log(cust);
     }
     formatCurrency(amount) {
+        // Remove non-numeric characters and decimals
         const numericString = amount.toString().replace(/\D/g, "");
 
+        // Convert the numeric string to a number
         const numericValue = parseInt(numericString, 10);
 
+        // Format the number with a thousands separator (,)
         return numericValue.toLocaleString("id-ID");
     }
 
     handleCheckboxChange(event) {
         const newValue = event.target.checked;
-        this.setState({ checkboxValue: newValue });
+        this.setState({ checkboxValue: newValue }); // Update the state
     }
 
     render() {
         const { cart, products, customers, barcode } = this.state;
-
+        // console.log(products);
         return (
             <div className="row">
                 <div className="col-md-6 col-lg-4">
@@ -304,9 +314,10 @@ class Cart extends Component {
                             >
                                 <option value="">Walking Customer</option>
                                 {customers.map((cus) => (
-                                    <option key={cus.id} value={cus.id}>
-                                        {`${cus.nama}(${cus.kondisi1.namaKond})`}
-                                    </option>
+                                    <option
+                                        key={cus.id}
+                                        value={cus.id}
+                                    >{`${cus.nama} (${cus.kondisi1.namaKond})`}</option>
                                 ))}
                             </select>
                         </div>
@@ -365,7 +376,26 @@ class Cart extends Component {
                             </table>
                         </div>
                     </div>
-
+                    <div className="row">
+                        <div className="col">
+                            <input
+                                type="checkbox"
+                                checked={this.state.checkboxValue} // Set the initial value
+                                onChange={this.handleCheckboxChange} // Define a change handler
+                            />
+                            Customer Yang Sudah Terdaftar
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <input
+                                type="checkbox"
+                                checked={this.state.checkboxValue} // Set the initial value
+                                onChange={this.handleCheckboxChange} // Define a change handler
+                            />
+                            Customer Yang Sudah Terdaftar
+                        </div>
+                    </div>
                     <div className="row">
                         <div className="col">Total:</div>
                         <div className="col text-right">
