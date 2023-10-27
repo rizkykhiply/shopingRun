@@ -37,6 +37,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="alamat">Alamat</label>
+                    <input type="text" name="alamat" class="form-control @error('alamat') is-invalid @enderror" id="alamat"
+                           placeholder="alamat" value="{{ old('alamat', $customer->alamat) }}">
+                    @error('alamat')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
                     <label for="hp">Hp</label>
                     <input type="text" name="hp" class="form-control @error('hp') is-invalid @enderror" id="hp"
                            placeholder="Hp" value="{{ old('hp', $customer->hp) }}">

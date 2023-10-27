@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { sum } from "lodash";
+import Select from "react-select";
 
 class Cart extends Component {
     constructor(props) {
@@ -211,8 +212,8 @@ class Cart extends Component {
         }
     }
 
-    setCustomerId(event) {
-        const customerId = parseInt(event.target.value);
+    setCustomerId(selectedOption) {
+        const customerId = selectedOption.value;
         const customer = this.state.customers.find(
             (cust) => cust.id === customerId
         );
@@ -276,35 +277,27 @@ class Cart extends Component {
     }
 
     render() {
-        const { cart, products, customers, barcode } = this.state;
+        const { cart, products, customers, selectedCustomerId } = this.state;
+
+        const customerOptions = customers.map((cus) => ({
+            value: cus.id,
+            label: `${cus.nama}-${cus.hp}-(${cus.kondisi1.namaKond})`,
+        }));
 
         return (
             <div className="row">
                 <div className="col-md-6 col-lg-4">
                     <div className="row mb-2">
                         <div className="col">
-                            <form onSubmit={this.handleScanBarcode}>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Scan Barcode..."
-                                    value={barcode}
-                                    onChange={this.handleOnChangeBarcode}
-                                />
-                            </form>
-                        </div>
-                        <div className="col">
-                            <select
-                                className="form-control"
+                            <Select
+                                options={customerOptions}
+                                value={customerOptions.find(
+                                    (option) =>
+                                        option.value === selectedCustomerId
+                                )}
                                 onChange={this.setCustomerId}
-                            >
-                                <option value="">Walking Customer</option>
-                                {customers.map((cus) => (
-                                    <option key={cus.id} value={cus.id}>
-                                        {`${cus.nama}(${cus.kondisi1.namaKond})`}
-                                    </option>
-                                ))}
-                            </select>
+                                placeholder="Select Customer"
+                            />
                         </div>
                     </div>
                     <div className="user-cart">
