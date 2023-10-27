@@ -4,12 +4,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { sum } from "lodash";
 
-// const poinNasahabRegis = 250000;
-// const poinNasahabNonRegis = 750000;
-// const maxPoin = 7500000;
-// const minPoinRegis = 3;
-// const minPoinNonRegis = 2;
-
 class Cart extends Component {
     constructor(props) {
         super(props);
@@ -18,6 +12,13 @@ class Cart extends Component {
             poin: 0,
             products: [],
             customers: [],
+            kondisi: {
+                jmlPembagi: 0,
+                jmlMin: 0,
+                minPoin: 0,
+                maxPoin: 0,
+                isCond: 0,
+            },
             barcode: "",
             search: "",
             customer_id: "",
@@ -104,48 +105,44 @@ class Cart extends Component {
     }
 
     getTotal(cart) {
-        if (this.state.customers && this.state.customers.length > 0) {
-            if (this.state.customers[0].kondisi1) {
-            } else {
-                console.log("kondisi1 is undefined for the first customer");
-            }
-        } else {
-            return 0;
-        }
+        console.log(this.state);
 
         const total = cart.map((c) => c.pivot.price * c.price);
-        const totalDivideRegis = this.state.jmlPembagi;
-        const totalMinRegis = this.state.jmlMin;
-        const totalMinPoin = this.state.minPoin;
+        const totalDivideRegis = this.state.kondisi.jmlPembagi;
+        const totalMinRegis = this.state.kondisi.jmlMin;
+        const totalMinPoin = this.state.kondisi.minPoin;
         const totalCart = sum(total);
-        const maxPoin = this.state.maxPoin;
+        const maxPoin = this.state.kondisi.maxPoin;
+        const isCond = this.state.kondisi.isCond;
+        const accumulate = (totalCart / totalMinRegis) % 1 === 0;
 
         let calcPoin = 0;
 
-        if ((totalCart / totalMinRegis) % 1 === 0) {
-            calcPoin =
-                totalCart / totalDivideRegis +
-                Math.floor(totalCart / totalMinRegis);
-        } else {
-            const calcSumPoin =
-                Math.floor(totalCart / totalMinRegis) * totalMinRegis;
-            if (calcSumPoin !== totalCart) {
+        if (this.state.customer_id) {
+            if (accumulate && isCond) {
+                console.log("HEHE1");
+
                 calcPoin =
-                    calcSumPoin / totalDivideRegis +
+                    totalCart / totalDivideRegis +
                     Math.floor(totalCart / totalMinRegis);
-            }
-            if (totalCart < totalMinRegis) {
-                calcPoin = 0;
             } else {
-                calcPoin = Math.floor(totalCart / 250000);
+                if (isCond) {
+                    const calcSumPoin =
+                        Math.floor(totalCart / totalMinRegis) * totalMinRegis;
+                    if (calcSumPoin !== totalCart) {
+                        calcPoin =
+                            calcSumPoin / totalDivideRegis +
+                            Math.floor(totalCart / totalMinRegis);
+                    }
+                }
+                if (!isCond) {
+                    console.log(totalCart, totalDivideRegis);
+                    calcPoin = Math.floor(totalCart / totalMinRegis);
+                }
             }
         }
-        if (calcPoin > maxPoin) {
-            calcPoin = maxPoin;
-        }
-        this.state.poin = calcPoin;
         console.log(calcPoin);
-        console.log(totalCart);
+        this.state.poin = calcPoin > maxPoin ? maxPoin : calcPoin;
         return sum(total).toFixed();
     }
 
@@ -215,22 +212,21 @@ class Cart extends Component {
     }
 
     setCustomerId(event) {
-        const customerId = parseInt(event.target.value, 10);
+        const customerId = parseInt(event.target.value);
         const customer = this.state.customers.find(
             (cust) => cust.id === customerId
         );
         if (customer) {
-            console.log(customer);
-            if (customer.kondisi1) {
-                const kondisi1 = customer.kondisi1;
-                this.setState({
-                    customer_id: customerId,
-                    jmlPembagi: kondisi1.jmlPembagi,
-                    jmlMin: kondisi1.jmlMin,
-                    minPoin: kondisi1.minPoin,
-                    maxPoin: kondisi1.maxPoin,
-                });
-            }
+            this.setState({
+                customer_id: customerId,
+                kondisi: {
+                    jmlPembagi: +customer.kondisi1.jmlPembagi,
+                    jmlMin: +customer.kondisi1.jmlMin,
+                    minPoin: +customer.kondisi1.minPoin,
+                    maxPoin: +customer.kondisi1.maxPoin,
+                    isCond: +customer.kondisi1.isCond,
+                },
+            });
         }
     }
 
@@ -322,8 +318,8 @@ class Cart extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {cart.map((c) => (
-                                        <tr key={c.id}>
+                                    {cart.map((c, i) => (
+                                        <tr key={i}>
                                             <td>{c.name}</td>
                                             <td>
                                                 <input
