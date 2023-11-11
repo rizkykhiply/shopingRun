@@ -47,7 +47,9 @@
                 @endforeach
             </tbody>
         </table>
-        <a href="{{ route('reports.exportPDF', ['report' => 'default', 'start_date' => request()->input('start_date'), 'end_date' => request()->input('end_date')]) }}">Export as PDF</a>
+        <a href="{{ route('reports.exportPDF', ['report' => 'default', 'start_date' => request()->input('start_date'), 'end_date' => request()->input('end_date')]) }}" class="btn btn-primary">
+            <i class="fas fa-file-pdf"></i> Export as PDF
+        </a>
 
         {{-- {{ $data->links() }} --}}
     </div>
