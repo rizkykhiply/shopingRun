@@ -121,7 +121,7 @@ class Cart extends Component {
 
         if (this.state.customer_id) {
             if (accumulate && isCond) {
-                console.log("HEHE1");
+                // console.log("HEHE1");
 
                 calcPoin =
                     totalCart / totalDivideRegis +
@@ -284,20 +284,36 @@ class Cart extends Component {
             label: `${cus.nama}-${cus.hp}-(${cus.kondisi1.namaKond})`,
         }));
 
+        const redirectToCustomerAdd = () => {
+            window.location.href = "/admin/customers/create";
+        };
+
         return (
             <div className="row">
                 <div className="col-md-6 col-lg-4">
                     <div className="row mb-2">
                         <div className="col">
-                            <Select
-                                options={customerOptions}
-                                value={customerOptions.find(
-                                    (option) =>
-                                        option.value === selectedCustomerId
-                                )}
-                                onChange={this.setCustomerId}
-                                placeholder="Select Customer"
-                            />
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div style={{ flex: 1, marginRight: "10px" }}>
+                                    <Select
+                                        options={customerOptions}
+                                        value={customerOptions.find(
+                                            (option) =>
+                                                option.value ===
+                                                selectedCustomerId
+                                        )}
+                                        onChange={this.setCustomerId}
+                                        placeholder="Select Customer"
+                                    />
+                                </div>
+                                <button
+                                    onClick={redirectToCustomerAdd}
+                                    className="btn btn-success btn-sm"
+                                >
+                                    Add Customer
+                                    <i className="fas fa-add"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="user-cart">
@@ -395,7 +411,7 @@ class Cart extends Component {
                         <input
                             type="text"
                             className="form-control"
-                            placeholder="Search Product..."
+                            placeholder="Search Tenant..."
                             onChange={this.handleChangeSearch}
                             onKeyDown={this.handleSeach}
                         />
