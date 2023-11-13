@@ -44,7 +44,9 @@
                     <td>{{ $row->Poin }}</td>
                     <td>{{ $row->tanggal }}</td>
                     <td>
-                        <a href="" class="btn btn-info"><i class="fas fa-eye" style="color: rgb(70, 72, 70)"></i></a>
+                        <a href="{{ route('reports.showDetail', ['customerId' => $row->id]) }}" class="btn btn-info">
+                            <i class="fas fa-eye" style="color: rgb(70, 72, 70)"></i>
+                        </a>
                     </td>
                 </tr>
                 @endforeach

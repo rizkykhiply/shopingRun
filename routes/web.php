@@ -27,6 +27,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     
     
     Route::resource('reports', ReportController::class);
+    // Route::get('/reports/{customerId}', 'ReportController@showDetail')->name('reports.detail');
+    // Route::get('/reports/{customerId}', 'ReportController@showDetail')->name('reports.detail');
+    Route::get('admin/reports/{customerId}/showDetail', [ReportController::class, 'showDetail'])->name('reports.showDetail');
+    Route::get('/reports/{customerId}/showDetail', [ReportController::class, 'showDetail'])->name('reports.showDetail');
     Route::get('/admin/reports/{report}/exportPDF', [ReportController::class, 'exportPDF'])->name('reports.exportPDF');
 
 

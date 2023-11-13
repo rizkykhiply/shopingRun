@@ -37,7 +37,7 @@ class ReportController extends Controller
     private function getDataForDateRange($startDate, $endDate)
     {
         return DB::table('customers as c')
-            ->select('c.nama as Nama', DB::raw('SUM(p.amount) as Total'), DB::raw('SUM(p.poin) as Poin'), DB::raw('MAX(p.created_at) as tanggal'))
+            ->select('c.id as id', 'c.nama as Nama', DB::raw('SUM(p.amount) as Total'), DB::raw('SUM(p.poin) as Poin'), DB::raw('MAX(p.created_at) as tanggal'))
             ->join('orders as o', 'c.id', '=', 'o.customer_id')
             ->join('payments as p', 'p.order_id', '=', 'o.id')
             ->whereDate('p.created_at', '>=', [$startDate])
@@ -45,4 +45,24 @@ class ReportController extends Controller
             ->groupBy('o.customer_id')
             ->get();
     }
+    public function showDetail($customerId) {
+        $customerDetails = DB::table('order_items as oi')
+            ->select('c.id as id','c.nama as Nama', 'c.nik as Nik', 'c.alamat as Alamat', 'c.hp as hp', 'c.rek as rek', 'p.name as nameProduct', 'oi.price as price', 'oi.created_at as tanggal')
+            ->join('orders as o', 'oi.order_id', '=', 'o.id')
+            ->join('customers as c', 'o.customer_id', '=', 'c.id')
+            ->join('products as p', 'oi.product_id', '=', 'p.id')
+            ->where('c.id', $customerId)
+            ->get();
+        if (request()->has('pdf')) {
+            $pdf = PDF::loadView('reports.reportsDetail', ['customerDetails' => $customerDetails])->setOptions(['defaultFont' => 'sans-serif']);
+            return $pdf->stream('customer_details.pdf');
+        }
+        $report = $customerId;
+        return view('reports.detail', [
+            'customerDetails' => $customerDetails,
+            'customerId' => $customerId,
+            'report' => $report, // Tambahkan variabel ini
+        ]);
+    }
+    
 }
