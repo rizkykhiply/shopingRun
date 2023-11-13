@@ -7,19 +7,23 @@
             border-collapse: collapse;
             width: 100%;
         }
-        th, td {
+         td {
             border: 1px solid #000;
             padding: 8px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #1307ec;
+            color: white;
+            padding: 8px;
+            border: 1px solid #000;
+            text-align: left;
         }
     </style>
 </head>
 <body>
     <h1>Customer Report</h1>
-    <p>Printed on: {{ now()->format('Y-m-d H:i:s') }}</p> 
+    <p>Periode: {{ now()->format('Y-m-d H:i:s') }}</p> 
     <table>
         <thead>
             <tr>

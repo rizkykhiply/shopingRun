@@ -40,8 +40,9 @@ class ReportController extends Controller
             ->select('c.nama as Nama', DB::raw('SUM(p.amount) as Total'), DB::raw('SUM(p.poin) as Poin'), DB::raw('MAX(p.created_at) as tanggal'))
             ->join('orders as o', 'c.id', '=', 'o.customer_id')
             ->join('payments as p', 'p.order_id', '=', 'o.id')
-            ->whereBetween('p.created_at', [$startDate, $endDate])
-            ->groupBy('c.id')
+            ->whereDate('p.created_at', '>=', [$startDate])
+            ->whereDate('p.created_at', '<=', [$endDate])
+            ->groupBy('o.customer_id')
             ->get();
     }
 }

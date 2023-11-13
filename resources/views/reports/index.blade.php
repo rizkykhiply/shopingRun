@@ -43,6 +43,9 @@
                     <td>{{ 'Rp ' . number_format($row->Total, 0, ',', '.') }}</td>
                     <td>{{ $row->Poin }}</td>
                     <td>{{ $row->tanggal }}</td>
+                    <td>
+                        <a href="" class="btn btn-info"><i class="fas fa-eye" style="color: rgb(70, 72, 70)"></i></a>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -51,7 +54,6 @@
             <i class="fas fa-file-pdf"></i> Export as PDF
         </a>
 
-        {{-- {{ $data->links() }} --}}
     </div>
 </div>
 @endsection
