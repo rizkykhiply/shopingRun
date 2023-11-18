@@ -9,8 +9,19 @@
 <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
 @endsection
 @section('content')
+
 <div class="card">
     <div class="card-body">
+        <div class="card-body">
+        <div class="row justify-content-end">
+            <div class="col-md-4">
+                <form action="{{ route('customers.index') }}" method="GET" class="form-inline">
+                    <input class="form-control" type="text" name="search" placeholder="Search ...">
+                    <button class="btn btn-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>        
         <table class="table">
             <thead>
                 <tr>

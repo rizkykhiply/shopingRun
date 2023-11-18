@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
  
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use PDF;
  
  
@@ -17,6 +19,16 @@ class ReportController extends Controller
 
         if ($startDate && $endDate) {
             $data = $this->getDataForDateRange($startDate, $endDate);
+            $currentPage = Paginator::resolveCurrentPage('page');
+        $perPage = 10; // Number of items per page
+
+        $data = new LengthAwarePaginator(
+            $data->forPage($currentPage, $perPage),
+            $data->count(),
+            $perPage,
+            $currentPage,
+            ['path' => Paginator::resolveCurrentPath()]
+        );
         }
 
         return view('reports.index', ['data' => $data]);
@@ -61,8 +73,11 @@ class ReportController extends Controller
         return view('reports.detail', [
             'customerDetails' => $customerDetails,
             'customerId' => $customerId,
-            'report' => $report, // Tambahkan variabel ini
+            'report' => $report, 
         ]);
     }
+    // public function getReportTenant(){
+    //     $reportTenant = DB::table()
+    // }
     
 }
