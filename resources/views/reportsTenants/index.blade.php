@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Summary Report')
-@section('content-header', 'Summary Report')
+@section('title', 'Tenant Report')
+@section('content-header', 'Tenant Report')
 
 
 @section('content')
@@ -41,18 +41,11 @@
                     <td>{{ $row->Nama }}</td>
                     <td>{{ $row->Ket }}</td>
                     <td>{{ 'Rp ' . number_format($row->Total, 0, ',', '.') }}</td>
-                    {{-- <td>{{ $row->Poin }}</td> --}}
-                    {{-- <td>{{ $row->tanggal }}</td> --}}
-                    {{-- <td>
-                        <a href="{{ route('reports.showDetail', ['customerId' => $row->id]) }}" class="btn btn-info">
-                            <i class="fas fa-eye" style="color: rgb(70, 72, 70)"></i>
-                        </a>
-                    </td> --}}
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        <a href="{{ route('reports.exportPDF', ['report' => 'default', 'start_date' => request()->input('start_date'), 'end_date' => request()->input('end_date')]) }}" class="btn btn-primary">
+        <a href="{{ route('reportTenants.exportPDF', ['report' => 'default', 'start_date' => request()->input('start_date'), 'end_date' => request()->input('end_date')]) }}" class="btn btn-primary">
             <i class="fas fa-file-pdf"></i> Export as PDF
         </a>
 

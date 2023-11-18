@@ -33,7 +33,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/admin/reports/{report}/exportPDF', [ReportController::class, 'exportPDF'])->name('reports.exportPDF');
 
     Route::resource('reportTenants', ReportTenantController::class);
-    Route::get('/admin/reportTenants/{report}/exportPDF', [ReportController::class, 'exportPDF'])->name('reportTenants.exportPDF');
+    Route::get('/admin/reportTenants/{report}/exportPDF', [ReportTenantController::class, 'exportPDF'])->name('reportTenants.exportPDF');
 
     Route::resource('tenants', TenantController::class);
 
