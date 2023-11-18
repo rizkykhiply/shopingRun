@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportTenantController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,12 +28,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     
     
     Route::resource('reports', ReportController::class);
-    // Route::get('/reports/{customerId}', 'ReportController@showDetail')->name('reports.detail');
-    // Route::get('/reports/{customerId}', 'ReportController@showDetail')->name('reports.detail');
     Route::get('admin/reports/{customerId}/showDetail', [ReportController::class, 'showDetail'])->name('reports.showDetail');
     Route::get('/reports/{customerId}/showDetail', [ReportController::class, 'showDetail'])->name('reports.showDetail');
     Route::get('/admin/reports/{report}/exportPDF', [ReportController::class, 'exportPDF'])->name('reports.exportPDF');
 
+    Route::resource('reportTenants', ReportTenantController::class);
+    Route::get('/admin/reportTenants/{report}/exportPDF', [ReportController::class, 'exportPDF'])->name('reportTenants.exportPDF');
 
     Route::resource('tenants', TenantController::class);
 

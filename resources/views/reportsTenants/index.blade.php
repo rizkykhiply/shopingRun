@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-md-7"></div>
             <div class="col-md-5">
-                <form action="{{route('reports.index')}}">
+                <form action="{{route('reportTenants.index')}}">
                     <div class="row">
                         <div class="col-md-5">
                             <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
@@ -30,9 +30,8 @@
                 <tr>
                     <th>No.</th>
                     <th>Nama</th>
+                    <th>Keterangan</th>
                     <th>Total</th>
-                    <th>Poin</th>
-                    <th>Tanggal</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,14 +39,15 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $row->Nama }}</td>
+                    <td>{{ $row->Ket }}</td>
                     <td>{{ 'Rp ' . number_format($row->Total, 0, ',', '.') }}</td>
-                    <td>{{ $row->Poin }}</td>
-                    <td>{{ $row->tanggal }}</td>
-                    <td>
+                    {{-- <td>{{ $row->Poin }}</td> --}}
+                    {{-- <td>{{ $row->tanggal }}</td> --}}
+                    {{-- <td>
                         <a href="{{ route('reports.showDetail', ['customerId' => $row->id]) }}" class="btn btn-info">
                             <i class="fas fa-eye" style="color: rgb(70, 72, 70)"></i>
                         </a>
-                    </td>
+                    </td> --}}
                 </tr>
                 @endforeach
             </tbody>

@@ -46,16 +46,22 @@
                         <p>Open POS</p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview">
+                {{-- <li class="nav-item has-treeview">
                     <a href="{{ route('orders.index') }}" class="nav-link {{ activeSegment('orders') }}">
                         <i class="nav-icon fas fa-cart-plus"></i>
                         <p>Orders</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item has-treeview">
                     <a href="{{ route('reports.index') }}" class="nav-link {{ activeSegment('reports') }}">
                         <i class="nav-icon fas fa-book"></i>
-                        <p>Report</p>
+                        <p>Report Customer</p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('reportTenants.index') }}" class="nav-link {{ activeSegment('reportTenants') }}">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>Report Tenant</p>
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
