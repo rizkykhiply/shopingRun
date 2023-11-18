@@ -43,7 +43,7 @@ class ReportTenantController extends Controller
 
         $pdf = PDF::loadView('reportsTenants.export', ['data' => $data])->setOptions(['defaultFont' => 'sans-serif']);
 
-        return $pdf->download('customer_report.pdf');
+        return $pdf->download('tenant_report.pdf');
     }
 
     private function getDataForDateRange($startDate, $endDate)
