@@ -75,7 +75,7 @@
                 </tr>
             </tfoot>
         </table>
-        {{ $data->links() }}
+        {{-- {{ $data->links() }} --}}
         <a href="{{ route('reports.exportPDF', ['report' => 'default', 'search_cus' => request()->input('search_cus'), 'start_date' => request()->input('start_date'), 'end_date' => request()->input('end_date')]) }}" class="btn btn-primary">
             <i class="fas fa-file-pdf"></i> Export as PDF
         </a>
