@@ -19,6 +19,13 @@
             border: 1px solid #000;
             text-align: left;
         }
+        tfoot {
+            background-color: #1307ec;
+            color: white;
+            padding: 8px;
+            border: 1px solid #000;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -34,6 +41,9 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $totalGlobal = 0;
+            @endphp
             @foreach ($data as $row)
             <tr>
                 <td>{{ $row->Nama }}</td>
@@ -41,8 +51,17 @@
                 <td>{{ $row->Poin }}</td>
                 <td>{{ $row->tanggal }}</td>
             </tr>
+            @php
+                $totalGlobal += $row->Total;
+            @endphp
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="1">Total :</td>
+                <td colspan="3">{{ 'Rp ' . number_format($totalGlobal, 0, ',', '.') }}</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>
